@@ -1,6 +1,8 @@
 # Aditi Securities 
 
-Aditi Rai (ar9598) — Instructor: Jean-Claude Franchitti
+Aditi Rai (ar9598)
+Find the live website here: https://aditi-securities-webapp26.azurewebsites.net/
+
 
 An investment/brokerage firm case study built across the four parts of the course project.
 
