@@ -1,0 +1,21 @@
+{
+  "source": "Yahoo Finance (finance.yahoo.com/quote/AAPL/news)",
+  "collected": "2026-07-22",
+  "ticker": "AAPL",
+  "headlines": [
+    {"title": "'Magnificent 7' stocks erase $797 billion in market value in worst day since April 2025", "publisher": "Yahoo Finance", "age": "1h ago", "related_tickers": ["GOOG", "GOOGL", "MSFT"]},
+    {"title": "When AI CapEx Eats Cash: Is Alphabet's Huge Bet Building a Moat or Sinking Margins?", "publisher": "Barrons.com", "age": "58m ago", "related_tickers": ["GOOG", "AAPL", "AMZN"]},
+    {"title": "Intel Stock Jumps as Earnings Nearly Double Analyst Estimates", "publisher": "Barrons.com", "age": "1h ago", "related_tickers": ["INTC", "AAPL"]},
+    {"title": "Qualcomm deepens ties with major Apple rival", "publisher": "TheStreet", "age": "3h ago", "related_tickers": ["005930.KS", "QCOM", "AAPL"]},
+    {"title": "TSLA, GOOGL Stocks Lead 'Magnificent Seven' Rout - MAGS ETF On Track For Biggest Single-Day Loss This Year", "publisher": "Stocktwits", "age": "3h ago", "related_tickers": ["TSLA", "GOOG", "QQQ"]},
+    {"title": "Apple Tests Smarter Shopping Experience", "publisher": "GuruFocus.com", "age": "4h ago", "related_tickers": ["AAPL"]},
+    {"title": "Europe just fined Google $1 billion, the day before Trump is expected to announce tariffs", "publisher": "Axios", "age": "4h ago", "related_tickers": ["GOOG", "AAPL", "META"]},
+    {"title": "Magnificent 7 Loses $767 Billion as AI Skeptics Dump Tech Stocks", "publisher": "Bloomberg", "age": "4h ago", "related_tickers": ["GOOG", "TSLA", "MSFT"]},
+    {"title": "3 Things Investors Can Expect When Tim Cook Steps Down as CEO in September After 15 Years and Hands the Reins to John Ternus", "publisher": "Motley Fool", "age": "5h ago", "related_tickers": ["AAPL", "NVDA"]},
+    {"title": "As Wall Street Cuts Tesla, Morgan Stanley Raises Its Apple Target", "publisher": "24/7 Wall St.", "age": "5h ago", "related_tickers": ["AAPL", "MSFT", "TSLA"]},
+    {"title": "IBM Is The World's Worst Big Tech Company", "publisher": "24/7 Wall St.", "age": "5h ago", "related_tickers": ["IBM", "MSFT", "AAPL"]},
+    {"title": "Forget the Other Five: These 2 Mag7 Stocks Deserve Your Attention", "publisher": "24/7 Wall St.", "age": "6h ago", "related_tickers": ["AAPL", "NVDA", "MSFT"]},
+    {"title": "Apple (AAPL) Earnings Expected to Grow: Should You Buy?", "publisher": "Zacks", "age": "7h ago", "related_tickers": ["AAPL"]},
+    {"title": "Tech Stocks Forecasts - AAPL, MSFT, and AMZN Face Pre-Market Pullbacks", "publisher": "FX Empire", "age": "9h ago", "related_tickers": ["AAPL", "MSFT", "AMZN"]}
+  ]
+}

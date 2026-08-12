@@ -1,0 +1,41 @@
+digraph USECASE {
+  rankdir=LR;
+  graph [splines=spline, nodesep=0.55, ranksep=0.9, fontname="Helvetica"];
+  node [fontname="Helvetica", fontsize=11];
+  edge [fontname="Helvetica", fontsize=9];
+
+  // Actors
+  Prospect [shape=box, style="rounded,filled", fillcolor="#DCEBFF", label="Prospect /\nClient"];
+  FP [shape=box, style="rounded,filled", fillcolor="#FFE9C9", label="Financial\nProfessional"];
+  Compliance [shape=box, style="rounded,filled", fillcolor="#F5F5DC", label="Compliance\nOfficer"];
+  System [shape=box, style="rounded,filled", fillcolor="#E4F6DC", label="Aditi Securities\nSystem (automated)"];
+
+  subgraph cluster_system {
+    label="Aditi Securities – Quote & Onboarding Workflow"; fontname="Helvetica"; style=dashed; fontsize=12;
+
+    UC1 [shape=ellipse, style=filled, fillcolor="#FFFFFF", label="Request Investment\nPlan / Quote"];
+    UC2 [shape=ellipse, style=filled, fillcolor="#FFFFFF", label="Capture Risk\nProfile"];
+    UC3 [shape=ellipse, style=filled, fillcolor="#FFFFFF", label="Review Security\nRisk Signals"];
+    UC4 [shape=ellipse, style=filled, fillcolor="#FFFFFF", label="Generate Portfolio\nRecommendation"];
+    UC5 [shape=ellipse, style=filled, fillcolor="#FFFFFF", label="Open Account"];
+    UC6 [shape=ellipse, style=filled, fillcolor="#FFFFFF", label="Run Suitability\nReview"];
+    UC7 [shape=ellipse, style=filled, fillcolor="#FFFFFF", label="Fund Account"];
+    UC8 [shape=ellipse, style=filled, fillcolor="#FFFFFF", label="Confirm Account &\nIssue Policy/Welcome"];
+  }
+
+  Prospect -> UC1;
+  Prospect -> UC5;
+  Prospect -> UC7;
+  FP -> UC2;
+  FP -> UC5 [label="assists"];
+  Compliance -> UC6;
+  System -> UC3;
+  System -> UC4;
+  System -> UC8;
+
+  UC1 -> UC2 [style=dashed, label="<<include>>"];
+  UC1 -> UC4 [style=dashed, label="<<include>>"];
+  UC4 -> UC3 [style=dashed, label="<<include>>"];
+  UC5 -> UC6 [style=dashed, label="<<include>>"];
+  UC5 -> UC8 [style=dashed, label="<<include>>"];
+}

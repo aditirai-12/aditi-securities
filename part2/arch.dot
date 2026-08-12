@@ -1,0 +1,38 @@
+digraph ARCH {
+  rankdir=LR;
+  graph [splines=spline, nodesep=0.5, ranksep=0.8, fontname="Helvetica"];
+  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=12, margin="0.2,0.12"];
+  edge [fontname="Helvetica", fontsize=10];
+
+  subgraph cluster_src {
+    label="External Sources"; fontname="Helvetica"; style=dashed;
+    YF [label="Yahoo Finance\n(prices, news)", fillcolor="#DCEBFF"];
+    SEC [label="SEC EDGAR\n(filings)", fillcolor="#DCEBFF"];
+  }
+
+  subgraph cluster_lake {
+    label="Cloud Data Lake (Azure Blob Storage)"; fontname="Helvetica"; style=dashed;
+    RAW [label="Raw zone\nprices / news / filings", fillcolor="#FFE9C9"];
+    CUR [label="Curated zone\nderived signals", fillcolor="#FFE9C9"];
+  }
+
+  subgraph cluster_rdbms {
+    label="Aditi Securities RDBMS (MySQL)"; fontname="Helvetica"; style=dashed;
+    TDS [label="TDS\nPart I schema\n(20 tables)", fillcolor="#E4F6DC"];
+    HYB [label="Hybrid link tables\nLAKE_DOCUMENT\nSECURITY_SIGNAL", fillcolor="#E4F6DC"];
+  }
+
+  OUT [label="Reporting and analytics\nsuitability reviews,\nportfolio risk", fillcolor="#EBDCF6"];
+  GOV [label="Governance: metadata management, data quality,\nretention standards, access control", shape=box, style="filled", fillcolor="#F5F5DC"];
+
+  YF -> RAW [label="ingest"];
+  SEC -> RAW [label="ingest"];
+  RAW -> CUR [label="ETL / cleanse"];
+  CUR -> HYB [label="load signals"];
+  RAW -> HYB [label="catalog metadata", style=dashed];
+  TDS -> HYB [dir=both, label="FK: Security_id"];
+  HYB -> OUT;
+  TDS -> OUT;
+  GOV -> RAW [style=dotted, arrowhead=none];
+  GOV -> TDS [style=dotted, arrowhead=none];
+}

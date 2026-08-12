@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Quote Log{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>Quote Requests (OLTP log)</h1>
+  <p class="muted">Every row here is a write to the QUOTE_REQUEST table made by the app at request time — the
+  transactional record of an ML-informed business decision.</p>
+  <table>
+    <tr><th>#</th><th>When</th><th>Prospect</th><th>Ticker</th><th>Risk Tol.</th><th>Predicted Up %</th><th>Model</th></tr>
+    {% for q in quotes %}
+    <tr>
+      <td>{{ q.Quote_id }}</td>
+      <td>{{ q.Requested_at.strftime("%Y-%m-%d %H:%M:%S") }}</td>
+      <td>{{ q.Prospect_name }}</td>
+      <td>{{ q.Ticker }}</td>
+      <td>{{ q.Risk_tolerance }}</td>
+      <td>{% if q.Predicted_up_probability is not none %}{{ "%.1f"|format(q.Predicted_up_probability * 100) }}%{% else %}—{% endif %}</td>
+      <td class="mono">{{ q.Model_version }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

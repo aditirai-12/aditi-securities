@@ -1,0 +1,167 @@
+digraph ER {
+  rankdir=LR;
+  graph [splines=spline, nodesep=0.45, ranksep=0.9, fontname="Helvetica"];
+  node [shape=plaintext, fontname="Helvetica", fontsize=11];
+  edge [fontname="Helvetica", fontsize=10, arrowhead=none, arrowtail=crow, dir=both];
+
+  // colors: ClientMgmt #DCEBFF, Advisory #FFE9C9, Product #E4F6DC, Trading #FFD9D9, Portfolio #EBDCF6, Firm/Compliance #F5F5DC, Clearing #DCF3F6
+
+  CLIENT [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#DCEBFF">
+    <TR><TD BGCOLOR="#9EC5F0"><B>CLIENT</B></TD></TR>
+    <TR><TD ALIGN="LEFT"><U>Client_id (PK)</U></TD></TR>
+    <TR><TD ALIGN="LEFT">Fname, Lname</TD></TR>
+    <TR><TD ALIGN="LEFT">Email, Phone, Address</TD></TR>
+    <TR><TD ALIGN="LEFT">Date_of_birth</TD></TR>
+    <TR><TD ALIGN="LEFT">Tax_id (unique)</TD></TR></TABLE>>];
+
+  RISK_PROFILE [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#DCEBFF">
+    <TR><TD BGCOLOR="#9EC5F0"><B>RISK_PROFILE</B></TD></TR>
+    <TR><TD ALIGN="LEFT"><U>Risk_profile_id (PK)</U></TD></TR>
+    <TR><TD ALIGN="LEFT">Risk_tolerance</TD></TR>
+    <TR><TD ALIGN="LEFT">Investment_goal</TD></TR>
+    <TR><TD ALIGN="LEFT">Time_horizon, Review_date</TD></TR></TABLE>>];
+
+  ACCOUNT [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#DCEBFF">
+    <TR><TD BGCOLOR="#9EC5F0"><B>ACCOUNT</B></TD></TR>
+    <TR><TD ALIGN="LEFT"><U>Account_id (PK)</U></TD></TR>
+    <TR><TD ALIGN="LEFT">Client_id (FK)</TD></TR>
+    <TR><TD ALIGN="LEFT">Risk_profile_id (FK)</TD></TR>
+    <TR><TD ALIGN="LEFT">Account_type, Open_date</TD></TR>
+    <TR><TD ALIGN="LEFT">Status</TD></TR>
+    <TR><TD ALIGN="LEFT">Beneficiary_name, _relationship</TD></TR></TABLE>>];
+
+  FINANCIAL_PROFESSIONAL [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#FFE9C9">
+    <TR><TD BGCOLOR="#F3C77C"><B>FINANCIAL_PROFESSIONAL</B></TD></TR>
+    <TR><TD ALIGN="LEFT"><U>Fp_id (PK)</U></TD></TR>
+    <TR><TD ALIGN="LEFT">Fname, Lname</TD></TR>
+    <TR><TD ALIGN="LEFT">License_number (unique)</TD></TR>
+    <TR><TD ALIGN="LEFT">Email, Hire_date</TD></TR>
+    <TR><TD ALIGN="LEFT">Firm_id (FK), Branch_id (FK)</TD></TR></TABLE>>];
+
+  CLIENT_ADVISOR_ASSIGNMENT [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#FFE9C9">
+    <TR><TD BGCOLOR="#F3C77C"><B>CLIENT_ADVISOR_ASSIGNMENT</B></TD></TR>
+    <TR><TD ALIGN="LEFT"><U>Client_id + Fp_id + Start_date (PK)</U></TD></TR>
+    <TR><TD ALIGN="LEFT">End_date, Advisory_role</TD></TR></TABLE>>];
+
+  APPOINTMENT [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#FFE9C9">
+    <TR><TD BGCOLOR="#F3C77C"><B>APPOINTMENT</B></TD></TR>
+    <TR><TD ALIGN="LEFT"><U>Appointment_id (PK)</U></TD></TR>
+    <TR><TD ALIGN="LEFT">Client_id (FK), Fp_id (FK)</TD></TR>
+    <TR><TD ALIGN="LEFT">Appt_datetime, Purpose</TD></TR>
+    <TR><TD ALIGN="LEFT">Status, Notes</TD></TR></TABLE>>];
+
+  ISSUER [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#E4F6DC">
+    <TR><TD BGCOLOR="#A9DD94"><B>ISSUER</B></TD></TR>
+    <TR><TD ALIGN="LEFT"><U>Issuer_id (PK)</U></TD></TR>
+    <TR><TD ALIGN="LEFT">Issuer_name, Country</TD></TR>
+    <TR><TD ALIGN="LEFT">Credit_rating</TD></TR></TABLE>>];
+
+  SECURITY_TYPE [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#E4F6DC">
+    <TR><TD BGCOLOR="#A9DD94"><B>SECURITY_TYPE</B></TD></TR>
+    <TR><TD ALIGN="LEFT"><U>Sec_type_id (PK)</U></TD></TR>
+    <TR><TD ALIGN="LEFT">Type_name, Description</TD></TR></TABLE>>];
+
+  SECURITY [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#E4F6DC">
+    <TR><TD BGCOLOR="#A9DD94"><B>SECURITY</B></TD></TR>
+    <TR><TD ALIGN="LEFT"><U>Security_id (PK)</U></TD></TR>
+    <TR><TD ALIGN="LEFT">Ticker, Sec_name</TD></TR>
+    <TR><TD ALIGN="LEFT">Sec_type_id (FK), Issuer_id (FK)</TD></TR>
+    <TR><TD ALIGN="LEFT">Exchange, Currency</TD></TR></TABLE>>];
+
+  ORDERS [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#FFD9D9">
+    <TR><TD BGCOLOR="#F0A0A0"><B>ORDERS</B></TD></TR>
+    <TR><TD ALIGN="LEFT"><U>Order_id (PK)</U></TD></TR>
+    <TR><TD ALIGN="LEFT">Account_id (FK), Security_id (FK)</TD></TR>
+    <TR><TD ALIGN="LEFT">Fp_id (FK, optional)</TD></TR>
+    <TR><TD ALIGN="LEFT">Order_type, Side, Quantity</TD></TR>
+    <TR><TD ALIGN="LEFT">Limit_price, Order_datetime, Status</TD></TR></TABLE>>];
+
+  TRADE [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#FFD9D9">
+    <TR><TD BGCOLOR="#F0A0A0"><B>TRADE</B></TD></TR>
+    <TR><TD ALIGN="LEFT"><U>Trade_id (PK)</U></TD></TR>
+    <TR><TD ALIGN="LEFT">Order_id (FK)</TD></TR>
+    <TR><TD ALIGN="LEFT">Execution_price, Execution_date</TD></TR>
+    <TR><TD ALIGN="LEFT">Quantity_filled, Venue</TD></TR></TABLE>>];
+
+  COMMISSION [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#FFD9D9">
+    <TR><TD BGCOLOR="#F0A0A0"><B>COMMISSION</B></TD></TR>
+    <TR><TD ALIGN="LEFT"><U>Commission_id (PK)</U></TD></TR>
+    <TR><TD ALIGN="LEFT">Trade_id (FK), Fp_id (FK)</TD></TR>
+    <TR><TD ALIGN="LEFT">Amount, Rate, Pay_date</TD></TR></TABLE>>];
+
+  PORTFOLIO [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#EBDCF6">
+    <TR><TD BGCOLOR="#C9A8E8"><B>PORTFOLIO</B></TD></TR>
+    <TR><TD ALIGN="LEFT"><U>Portfolio_id (PK)</U></TD></TR>
+    <TR><TD ALIGN="LEFT">Account_id (FK, unique)</TD></TR>
+    <TR><TD ALIGN="LEFT">Inception_date, Base_currency</TD></TR></TABLE>>];
+
+  HOLDING [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#EBDCF6">
+    <TR><TD BGCOLOR="#C9A8E8"><B>HOLDING</B></TD></TR>
+    <TR><TD ALIGN="LEFT"><U>Portfolio_id + Security_id (PK)</U></TD></TR>
+    <TR><TD ALIGN="LEFT">Quantity, Cost_basis</TD></TR>
+    <TR><TD ALIGN="LEFT">Last_updated</TD></TR></TABLE>>];
+
+  PORTFOLIO_VALUATION [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#EBDCF6">
+    <TR><TD BGCOLOR="#C9A8E8"><B>PORTFOLIO_VALUATION</B></TD></TR>
+    <TR><TD ALIGN="LEFT"><U>Portfolio_id + Valuation_date (PK)</U></TD></TR>
+    <TR><TD ALIGN="LEFT">Total_market_value</TD></TR>
+    <TR><TD ALIGN="LEFT">Cash_balance</TD></TR></TABLE>>];
+
+  FIRM [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#F5F5DC">
+    <TR><TD BGCOLOR="#D8D8A0"><B>FIRM</B></TD></TR>
+    <TR><TD ALIGN="LEFT"><U>Firm_id (PK)</U></TD></TR>
+    <TR><TD ALIGN="LEFT">Firm_name, Crd_number (unique)</TD></TR>
+    <TR><TD ALIGN="LEFT">Address</TD></TR></TABLE>>];
+
+  BRANCH [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#F5F5DC">
+    <TR><TD BGCOLOR="#D8D8A0"><B>BRANCH</B></TD></TR>
+    <TR><TD ALIGN="LEFT"><U>Branch_id (PK)</U></TD></TR>
+    <TR><TD ALIGN="LEFT">Firm_id (FK)</TD></TR>
+    <TR><TD ALIGN="LEFT">Branch_name, Address, Phone</TD></TR></TABLE>>];
+
+  COMPLIANCE_FLAG [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#F5F5DC">
+    <TR><TD BGCOLOR="#D8D8A0"><B>COMPLIANCE_FLAG</B></TD></TR>
+    <TR><TD ALIGN="LEFT"><U>Flag_id (PK)</U></TD></TR>
+    <TR><TD ALIGN="LEFT">Account_id (FK), Order_id (FK, opt)</TD></TR>
+    <TR><TD ALIGN="LEFT">Flag_type, Raised_date, Status</TD></TR>
+    <TR><TD ALIGN="LEFT">Resolution_date, Reviewer</TD></TR></TABLE>>];
+
+  CLEARINGHOUSE [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#DCF3F6">
+    <TR><TD BGCOLOR="#93D5DE"><B>CLEARINGHOUSE</B></TD></TR>
+    <TR><TD ALIGN="LEFT"><U>Clearinghouse_id (PK)</U></TD></TR>
+    <TR><TD ALIGN="LEFT">Ch_name, Dtc_number</TD></TR></TABLE>>];
+
+  SETTLEMENT [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#DCF3F6">
+    <TR><TD BGCOLOR="#93D5DE"><B>SETTLEMENT</B></TD></TR>
+    <TR><TD ALIGN="LEFT"><U>Settlement_id (PK)</U></TD></TR>
+    <TR><TD ALIGN="LEFT">Trade_id (FK, unique)</TD></TR>
+    <TR><TD ALIGN="LEFT">Clearinghouse_id (FK)</TD></TR>
+    <TR><TD ALIGN="LEFT">Settlement_date, Status, Net_amount</TD></TR></TABLE>>];
+
+  // relationships (crow at the many side = tail)
+  ACCOUNT -> CLIENT [taillabel="N", headlabel="1", label="owned by"];
+  ACCOUNT -> RISK_PROFILE [taillabel="N", headlabel="1", label="governed by"];
+  CLIENT_ADVISOR_ASSIGNMENT -> CLIENT [taillabel="N", headlabel="1"];
+  CLIENT_ADVISOR_ASSIGNMENT -> FINANCIAL_PROFESSIONAL [taillabel="N", headlabel="1"];
+  APPOINTMENT -> CLIENT [taillabel="N", headlabel="1"];
+  APPOINTMENT -> FINANCIAL_PROFESSIONAL [taillabel="N", headlabel="1"];
+  FINANCIAL_PROFESSIONAL -> FIRM [taillabel="N", headlabel="1", label="works for"];
+  FINANCIAL_PROFESSIONAL -> BRANCH [taillabel="N", headlabel="1", label="based at"];
+  BRANCH -> FIRM [taillabel="N", headlabel="1", label="belongs to"];
+  SECURITY -> SECURITY_TYPE [taillabel="N", headlabel="1", label="of type"];
+  SECURITY -> ISSUER [taillabel="N", headlabel="1", label="issued by"];
+  ORDERS -> ACCOUNT [taillabel="N", headlabel="1", label="placed for"];
+  ORDERS -> SECURITY [taillabel="N", headlabel="1", label="references"];
+  ORDERS -> FINANCIAL_PROFESSIONAL [taillabel="N", headlabel="0..1", label="placed through"];
+  TRADE -> ORDERS [taillabel="N", headlabel="1", label="fills"];
+  COMMISSION -> TRADE [taillabel="N", headlabel="1", label="earned on"];
+  COMMISSION -> FINANCIAL_PROFESSIONAL [taillabel="N", headlabel="1", label="paid to"];
+  PORTFOLIO -> ACCOUNT [taillabel="1", headlabel="1", label="belongs to", arrowtail=none];
+  HOLDING -> PORTFOLIO [taillabel="N", headlabel="1", label="held in"];
+  HOLDING -> SECURITY [taillabel="N", headlabel="1", label="position in"];
+  PORTFOLIO_VALUATION -> PORTFOLIO [taillabel="N", headlabel="1", label="snapshot of"];
+  COMPLIANCE_FLAG -> ACCOUNT [taillabel="N", headlabel="1", label="raised on"];
+  COMPLIANCE_FLAG -> ORDERS [taillabel="N", headlabel="0..1"];
+  SETTLEMENT -> TRADE [taillabel="1", headlabel="1", label="settles", arrowtail=none];
+  SETTLEMENT -> CLEARINGHOUSE [taillabel="N", headlabel="1", label="cleared through"];
+}

@@ -1,0 +1,73 @@
+# Aditi Rai - Part IV live-cloud retrain demo
+# Real terminal output from running demo.py (Flask test client) against the
+# live Azure Database for MySQL server from Part III
+# (aditi-securities-mysql.mysql.database.azure.com), via Azure Cloud Shell,
+# on 2026-08-12. Captured verbatim; not edited for presentation.
+
+=== GET / ===
+status: 200
+model version shown: not trained yet
+
+=== POST /quote (AAPL) - quote #1, before new data ===
+Quote #(\d+) for (\w+) -> ('1', 'AAPL')
+(\d+\.\d)%\s*</span>\s*<span class="muted">\(as of ([\d-]+)\) -> ('51.7', '2026-07-15')
+Model version: <span class="mono">([^<]+)</span> -> ('logreg-20260812T144424',)
+
+=== appending simulated new AAPL price row (2026-07-16) ===
+appended: 2026-07-16,323.00,324.50,316.20,318.40,318.40,52000000
+
+=== POST /admin/retrain (force) ===
+flash message: Model version logreg-20260812T144424 (test accuracy 0.525, 157 training rows).
+
+=== POST /quote (AAPL) - quote #2, after retrain ===
+Quote #(\d+) for (\w+) -> ('2', 'AAPL')
+(\d+\.\d)%\s*</span>\s*<span class="muted">\(as of ([\d-]+)\) -> ('70.8', '2026-07-16')
+Model version: <span class="mono">([^<]+)</span> -> ('logreg-20260812T144424',)
+recommendation -> 'Model favors AAPL: 70.8% estimated probability of a positive move next session. Consistent with a moderate risk tolerance.'
+
+=== GET /portfolio/1 ===
+('AAPL', '150.0000', '24500.00', '-0.4000', '0.2120', '2', '70.8%', 'logreg-20260812T144424')
+('MSFT', '80.0000', '21000.00', 'None', '-0.0640', '0', '42.5%', 'logreg-20260812T144424')
+('JPM', '120.0000', '18000.00', 'None', '0.1180', '0', '38.9%', 'logreg-20260812T144424')
+
+=== GET /quotes ===
+('1', '2026-08-12 14:44:25', 'Jordan Reyes', 'AAPL', 'Moderate', '51.7%', 'logreg-20260812T144424')
+('2', '2026-08-12 14:44:25', 'Jordan Reyes', 'AAPL', 'Moderate', '70.8%', 'logreg-20260812T144424')
+
+=== Direct verification via mysql CLI against the live server (bypassing the app) ===
+mysql --host=aditi-securities-mysql.mysql.database.azure.com --user=aditiadmin --password aditi_securities -e
+  "SELECT Quote_id, Requested_at, Prospect_name, Ticker, Predicted_up_probability, Model_version FROM QUOTE_REQUEST;
+   SELECT Portfolio_id, Security_id, Predicted_up_probability, Model_version, Last_refreshed FROM PORTFOLIO_RISK_SUMMARY;
+   SELECT Client_id, Fname, Lname FROM CLIENT;"
+
++----------+---------------------+---------------+--------+---------------------------+--------------------------+
+| Quote_id | Requested_at        | Prospect_name | Ticker | Predicted_up_probability  | Model_version            |
++----------+---------------------+---------------+--------+---------------------------+--------------------------+
+|        1 | 2026-08-12 14:44:25 | Jordan Reyes  | AAPL   |                    0.5169 | logreg-20260812T144424   |
+|        2 | 2026-08-12 14:44:25 | Jordan Reyes  | AAPL   |                    0.7077 | logreg-20260812T144424   |
++----------+---------------------+---------------+--------+---------------------------+--------------------------+
+
++--------------+-------------+---------------------------+--------------------------+---------------------+
+| Portfolio_id | Security_id | Predicted_up_probability  | Model_version            | Last_refreshed      |
++--------------+-------------+---------------------------+--------------------------+---------------------+
+|            1 |           1 |                    0.7077 | logreg-20260812T144424   | 2026-08-12 14:44:25 |
+|            1 |           2 |                    0.4253 | logreg-20260812T144424   | 2026-08-12 14:44:25 |
+|            1 |           3 |                    0.3889 | logreg-20260812T144424   | 2026-08-12 14:44:25 |
++--------------+-------------+---------------------------+--------------------------+---------------------+
+
++-----------+--------+--------+
+| Client_id | Fname  | Lname  |
++-----------+--------+--------+
+|         1 | Jordan | Reyes  |
++-----------+--------+--------+
+
+# Note: the model version string is timestamped to the second
+# (logreg-YYYYMMDDTHHMMSS). Because the initial lazy training (triggered by
+# quote #1, since no model existed yet) and the forced retrain both happened
+# within the same wall-clock second in this run, they share an identical
+# version label despite being two distinct model fits on different data (156
+# vs. 157 training rows). This is visible only through the differing
+# probability/quote values above, not the label -- a real limitation of the
+# second-granularity versioning scheme, surfaced by running the demo fast
+# enough against a live server. A production deployment would widen the
+# timestamp to include microseconds or use an incrementing counter.

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Portfolio{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>Portfolio {{ portfolio.Portfolio_id if portfolio else '' }} — Holdings &amp; Risk Summary</h1>
+  <p class="muted">Reads PORTFOLIO_RISK_SUMMARY, the materialized table from Part III extended in Part IV with the
+  live model's Predicted_up_probability — the hybrid (structured + ML-derived) view of the account.</p>
+  {% if portfolio %}
+  <table>
+    <tr><th>Ticker</th><th>Quantity</th><th>Cost Basis</th><th>News Sentiment</th><th>3mo Return</th><th>Risk Mentions</th><th>Predicted Up %</th><th>Model Version</th></tr>
+    {% for r in rows %}
+    <tr>
+      <td>{{ r.security.Ticker }}</td>
+      <td>{{ r.holding.Quantity }}</td>
+      <td>${{ "%.2f"|format(r.holding.Cost_basis) }}</td>
+      <td>{{ r.summary.News_sentiment if r.summary else "—" }}</td>
+      <td>{{ r.summary.Price_3mo_return if r.summary else "—" }}</td>
+      <td>{{ r.summary.Open_risk_mentions if r.summary else "—" }}</td>
+      <td>{% if r.summary and r.summary.Predicted_up_probability is not none %}{{ "%.1f"|format(r.summary.Predicted_up_probability * 100) }}%{% else %}not yet scored{% endif %}</td>
+      <td class="mono">{{ r.summary.Model_version if r.summary else "—" }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <p>No such portfolio.</p>
+  {% endif %}
+</div>
+{% endblock %}

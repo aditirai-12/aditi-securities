@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Aditi Securities - Home{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>Aditi Securities — Quote &amp; Portfolio Risk Workbench</h1>
+  <p class="muted">Project Part IV end-to-end demo: a data-driven workflow application over the Part I/II/III schema,
+  integrating the machine learning model trained on the Part II data lake.</p>
+  <p>Current deployed model version: <span class="mono">{{ model_version or "not trained yet" }}</span></p>
+  <form action="{{ url_for('admin_retrain') }}" method="post">
+    <button type="submit">Force retrain now</button>
+  </form>
+</div>
+<div class="card">
+  <h2>Securities in the catalog</h2>
+  <table>
+    <tr><th>Ticker</th><th>Name</th><th>Exchange</th></tr>
+    {% for s in securities %}
+    <tr><td>{{ s.Ticker }}</td><td>{{ s.Sec_name }}</td><td>{{ s.Exchange }}</td></tr>
+    {% endfor %}
+  </table>
+</div>
+<div class="card">
+  <h2>Accounts</h2>
+  <table>
+    <tr><th>Account ID</th><th>Client</th><th>Type</th><th>Status</th></tr>
+    {% for a in accounts %}
+    <tr><td>{{ a.Account_id }}</td><td>{{ a.client.Fname }} {{ a.client.Lname }}</td><td>{{ a.Account_type }}</td><td>{{ a.Status }}</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

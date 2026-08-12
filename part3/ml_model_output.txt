@@ -1,0 +1,35 @@
+Loaded 183 daily price rows across 3 tickers (AAPL, JPM, MSFT).
+After feature engineering (5/10-day rolling windows) and dropping warm-up rows: 156 usable rows.
+Class balance (Target_up): {1: 82, 0: 74}
+
+=== Logistic Regression ===
+Test accuracy: 0.564
+Confusion matrix [[TN FP][FN TP]]:
+[[ 7 12]
+ [ 5 15]]
+Coefficients (standardized features):
+  Lag1_return: 0.2695
+  Lag2_return: 0.3837
+  MA5: -0.3579
+  Price_vs_MA5: -0.3836
+  Price_vs_MA10: -0.0435
+  Volatility5: 0.2015
+  Volume_change: 0.1995
+
+=== Decision Tree Classifier (max_depth=3) ===
+Test accuracy: 0.513
+Confusion matrix [[TN FP][FN TP]]:
+[[17  2]
+ [17  3]]
+Feature importances:
+  Lag1_return: 0.2468
+  Lag2_return: 0.2693
+  MA5: 0.1633
+  Price_vs_MA5: 0.0000
+  Price_vs_MA10: 0.0000
+  Volatility5: 0.1083
+  Volume_change: 0.2124
+
+Baseline (always predict majority class): 0.513
+
+Selected model for deployment: logistic_regression (test accuracy 0.564)

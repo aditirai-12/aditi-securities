@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Get a Quote{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>Request an Investment Plan / Quote</h1>
+  <p class="muted">Implements the "Request Investment Plan / Quote" use case, including its Capture Risk Profile
+  and Generate Portfolio Recommendation (Review Security Risk Signals) sub-steps from the Part III use-case diagram.</p>
+  <form method="post">
+    <label>Prospect / client name</label>
+    <input type="text" name="name" value="Jordan Reyes" required>
+    <label>Risk tolerance</label>
+    <select name="risk_tolerance">
+      <option>Conservative</option>
+      <option selected>Moderate</option>
+      <option>Aggressive</option>
+    </select>
+    <label>Security</label>
+    <select name="ticker">
+      {% for s in securities %}
+      <option value="{{ s.Ticker }}">{{ s.Ticker }} — {{ s.Sec_name }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit">Get Quote</button>
+  </form>
+</div>
+
+{% if result %}
+<div class="card">
+  <h2>Quote #{{ result.quote_id }} for {{ result.ticker }}</h2>
+  {% if result.probability_up is not none %}
+    <p>
+      Estimated probability of a positive move next session:
+      <span class="badge {{ 'up' if result.probability_up >= 0.55 else ('down' if result.probability_up <= 0.45 else 'neutral') }}">
+        {{ "%.1f"|format(result.probability_up * 100) }}%
+      </span>
+      <span class="muted">(as of {{ result.as_of }})</span>
+    </p>
+  {% endif %}
+  <p>{{ result.recommendation }}</p>
+  <p class="muted">Model version: <span class="mono">{{ result.model_version }}</span>
+    {% if result.retrained_this_request %} — retrained just now because new price data was detected.
+    {% else %} — served from the already-trained model (no new data detected).{% endif %}
+  </p>
+</div>
+{% endif %}
+{% endblock %}

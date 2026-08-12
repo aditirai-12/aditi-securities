@@ -1,0 +1,7 @@
+Ticker,Signal_date,Signal_type,Signal_value,Source_document
+AAPL,2026-07-22,News_sentiment,-0.4,raw/news/AAPL_news_headlines_2026-07-22.json
+AAPL,2026-07-22,Risk_mention_tariffs,1,raw/filings/AAPL_10K_2025_Item1A_RiskFactors_excerpt.txt
+AAPL,2026-07-22,Risk_mention_supply_chain,1,raw/filings/AAPL_10K_2025_Item1A_RiskFactors_excerpt.txt
+AAPL,2026-07-15,Price_3mo_return,0.212,raw/prices/AAPL_daily_2026-04-17_2026-07-15.csv
+MSFT,2026-07-15,Price_3mo_return,-0.064,raw/prices/MSFT_daily_2026-04-17_2026-07-15.csv
+JPM,2026-07-15,Price_3mo_return,0.118,raw/prices/JPM_daily_2026-04-17_2026-07-15.csv

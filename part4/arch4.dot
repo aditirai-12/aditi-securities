@@ -1,0 +1,61 @@
+digraph ARCH4 {
+  rankdir=LR;
+  graph [splines=spline, nodesep=0.5, ranksep=0.75, fontname="Helvetica"];
+  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=12, margin="0.2,0.12"];
+  edge [fontname="Helvetica", fontsize=10];
+
+  subgraph cluster_src {
+    label="External Sources"; fontname="Helvetica"; style=dashed;
+    YF [label="Yahoo Finance\n(prices, news)", fillcolor="#DCEBFF"];
+    SEC [label="SEC EDGAR\n(filings)", fillcolor="#DCEBFF"];
+  }
+
+  subgraph cluster_lake {
+    label="Cloud Data Lake (Azure Blob Storage)"; fontname="Helvetica"; style=dashed;
+    RAW [label="Raw zone\nprices / news / filings", fillcolor="#FFE9C9"];
+    CUR [label="Curated zone\nderived signals", fillcolor="#FFE9C9"];
+  }
+
+  subgraph cluster_ml {
+    label="Analytics / ML (ml_pipeline.py)"; fontname="Helvetica"; style=dashed;
+    CHECK [label="should_retrain()\nfingerprint check", fillcolor="#F6DCE9"];
+    TRAIN [label="train_model()\nscikit-learn", fillcolor="#F6DCE9"];
+    SCORE [label="predict_for_ticker()\nbatch / on-demand scoring", fillcolor="#F6DCE9"];
+  }
+
+  subgraph cluster_rdbms {
+    label="Aditi Securities RDBMS (OLTP/ODS)"; fontname="Helvetica"; style=dashed;
+    TDS [label="TDS\nPart I schema\n(SQLAlchemy ORM)", fillcolor="#E4F6DC"];
+    HYB [label="Hybrid link tables\nLAKE_DOCUMENT\nSECURITY_SIGNAL", fillcolor="#E4F6DC"];
+    PHYS [label="PORTFOLIO_RISK_SUMMARY\n+ QUOTE_REQUEST\n(indexed, materialized)", fillcolor="#E4F6DC"];
+  }
+
+  subgraph cluster_app {
+    label="End-to-End Application (Flask)"; fontname="Helvetica"; style=dashed;
+    UI [label="Quote / Onboarding\nworkflow UI", fillcolor="#DCEAF6"];
+  }
+
+  USER [label="Client / Prospect\n/ Advisor", shape=ellipse, fillcolor="#F0F0F0"];
+  GOV [label="Governance: metadata management, data quality,\nretention, access control, model monitoring", shape=box, style="filled", fillcolor="#F5F5DC"];
+
+  YF -> RAW [label="ingest"];
+  SEC -> RAW [label="ingest"];
+  RAW -> CUR [label="ETL / cleanse"];
+  CUR -> HYB [label="load signals"];
+  RAW -> HYB [label="catalog metadata", style=dashed];
+  CUR -> CHECK [label="new data?"];
+  CHECK -> TRAIN [label="yes: retrain", style=dashed];
+  TRAIN -> SCORE;
+  SCORE -> PHYS [label="write predictions"];
+  TDS -> HYB [dir=both, label="FK: Security_id"];
+  HYB -> PHYS [label="refresh"];
+  TDS -> PHYS;
+  UI -> CHECK [label="every /quote request"];
+  UI -> TDS [label="ORM reads/writes\n(QuoteRequest, Holding...)", dir=both];
+  PHYS -> UI [label="risk-adjusted quote"];
+  USER -> UI [dir=both, label="quote / portfolio view"];
+  GOV -> RAW [style=dotted, arrowhead=none];
+  GOV -> TDS [style=dotted, arrowhead=none];
+  GOV -> TRAIN [style=dotted, arrowhead=none];
+  GOV -> UI [style=dotted, arrowhead=none];
+}
