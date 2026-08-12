@@ -1,4 +1,4 @@
-# Aditi Securities — Database Systems Course Project (CSCI-GA.2433-001, Summer 2026)
+# Aditi Securities 
 
 Aditi Rai (ar9598) — Instructor: Jean-Claude Franchitti
 
